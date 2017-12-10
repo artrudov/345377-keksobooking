@@ -129,6 +129,8 @@ for (var k = 0; k < adwords.length; k++) {
 
 mapElementsPin.appendChild(fragment);
 
-mapCard.insertBefore(renderCard(adwords[0]), mapCard.children[1]);
+// Не могу понять, но без 132 строки не выводится 135, стоит ее закоментировать выводится шаблон описания
+// Поэтому пришлось поставить display: none.
+mapCard.insertBefore(renderCard(adwords[0]), mapCard.children[1]).style = 'display: none;';
 
-mapCard.appendChild(renderCard(adwords[0]));
+mapCard.insertBefore(renderCard(adwords[0]), mapCard.children[1]);
