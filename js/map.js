@@ -93,7 +93,7 @@ var renderCard = function (sda) {
 
   cardTitle.innerHTML = sda.offer.title;
   cardAddress.innerHTML = sda.offer.address;
-  cardPrice.innerHTML = sda.offer.price;
+  cardPrice.innerHTML = sda.offer.price + '&#x20bd;/ночь';
   cardParagraph[2].innerHTML = sda.offer.rooms + ' комнаты для ' + sda.offer.guests + ' гостей';
   cardParagraph[3].innerHTML = 'Заезд после ' + sda.offer.ckeckin + ', выезд до ' + sda.offer.checkout;
   cardParagraph[4].innerHTML = sda.offer.description;
