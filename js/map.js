@@ -1,9 +1,10 @@
 'use strict';
 
 var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
-var TYPES = ['flat', 'house', 'bungalo'];
+var TYPES = [{flat: {ru: 'Квартира'}}, {house: {ru: 'Дом'}}, {bungalo: {ru: 'Бунгало'}}];
 var CHECKIN_AND_OUT = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var AMOUNT_ADWORDS = 8;
 
 var mapVisible = document.querySelector('.map');
 mapVisible.classList.remove('map--faded');
@@ -55,7 +56,7 @@ var getAdwordContent = function (numberImage) {
 };
 
 var adwords = [];
-for (var i = 0; i < 8; i++) {
+for (var i = 0; i < AMOUNT_ADWORDS; i++) {
   var swapFeatures = FEATURES;
 
   adwords[i] = getAdwordContent(i);
@@ -77,11 +78,26 @@ var renderPin = function (ads) {
 };
 
 
-// Дописать!
 var mapCard = document.querySelector('.map');
 var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
 
-var renderCard = function (sda) {
+var insertListItem = function (ads) {
+  var cardListFeatures = mapCardTemplate.querySelector('.popup__features');
+
+  while (cardListFeatures.firstChild) {
+    cardListFeatures.removeChild(cardListFeatures.firstChild);
+  }
+
+  var lengthFeaturesArray = ads.offer.features.length;
+
+  for (var s = 0; s < lengthFeaturesArray; s++) {
+    var newListItem = document.createElement('li');
+    newListItem.className = 'feature feature--' + ads.offer.features[s];
+    cardListFeatures.appendChild(newListItem);
+  }
+};
+
+var renderCard = function (ads) {
   var cardElement = mapCardTemplate.cloneNode(true);
   var cardTitle = mapCardTemplate.querySelector('h3');
   var cardAddress = mapCardTemplate.querySelector('small');
@@ -89,48 +105,40 @@ var renderCard = function (sda) {
   var cardType = mapCardTemplate.querySelector('h4');
   var cardParagraph = mapCardTemplate.querySelectorAll('p');
   var cardAvatar = mapCardTemplate.querySelector('.popup__avatar');
-  var cardListFeatures = mapCardTemplate.querySelector('.popup__features');
 
-  cardTitle.innerHTML = sda.offer.title;
-  cardAddress.innerHTML = sda.offer.address;
-  cardPrice.innerHTML = sda.offer.price + '&#x20bd;/ночь';
-  cardParagraph[2].innerHTML = sda.offer.rooms + ' комнаты для ' + sda.offer.guests + ' гостей';
-  cardParagraph[3].innerHTML = 'Заезд после ' + sda.offer.ckeckin + ', выезд до ' + sda.offer.checkout;
-  cardParagraph[4].innerHTML = sda.offer.description;
-  cardAvatar.setAttribute('src', sda.author.avatar);
 
-  if (sda.offer.type === 'flat') {
-    cardType.innerHTML = 'Квартира';
-  } else if (sda.offer.type === 'bungalo') {
-    cardType.innerHTML = 'Бунгало';
+  cardTitle.innerHTML = ads.offer.title;
+  cardAddress.innerHTML = ads.offer.address;
+  cardPrice.innerHTML = ads.offer.price + '&#x20bd;/ночь';
+  cardParagraph[2].innerHTML = ads.offer.rooms + ' комнаты для ' + ads.offer.guests + ' гостей';
+  cardParagraph[3].innerHTML = 'Заезд после ' + ads.offer.ckeckin + ', выезд до ' + ads.offer.checkout;
+  cardParagraph[4].innerHTML = ads.offer.description;
+  cardAvatar.setAttribute('src', ads.author.avatar);
+
+  if (ads.offer.type.flat) {
+    cardType.innerHTML = ads.offer.type.flat.ru;
+  } else if (ads.offer.type.bungalo) {
+    cardType.innerHTML = ads.offer.type.bungalo.ru;
   } else {
-    cardType.innerHTML = 'Дом';
+    cardType.innerHTML = ads.offer.type.house.ru;
   }
 
-  while (cardListFeatures.firstChild) {
-    cardListFeatures.removeChild(cardListFeatures.firstChild);
-  }
-
-  var lengthFeaturesArray = sda.offer.features.length;
-
-  for (var s = 0; s < lengthFeaturesArray; s++) {
-    var newListItem = document.createElement('li');
-    newListItem.className = 'feature feature--' + sda.offer.features[s];
-    cardListFeatures.appendChild(newListItem);
-  }
+  insertListItem(ads);
 
   return cardElement;
 };
 
-var fragment = document.createDocumentFragment();
-for (var k = 0; k < adwords.length; k++) {
-  fragment.appendChild(renderPin(adwords[k]));
-}
+var renderFragment = function (ads) {
+  var fragment = document.createDocumentFragment();
 
-mapElementsPin.appendChild(fragment);
+  for (var k = 0; k < ads.length; k++) {
+    fragment.appendChild(renderPin(ads[k]));
+  }
 
-// Не могу понять, но без 132 строки не выводится 135, стоит ее закоментировать выводится шаблон описания
-// Поэтому пришлось поставить display: none.
-mapCard.insertBefore(renderCard(adwords[0]), mapCard.children[1]).style = 'display: none;';
+  mapElementsPin.appendChild(fragment);
+  mapCard.insertBefore(renderCard(ads[0]), mapCard.children[1]).style = 'display: none;';
+  mapCard.insertBefore(renderCard(ads[0]), mapCard.children[1]);
+};
 
-mapCard.insertBefore(renderCard(adwords[0]), mapCard.children[1]);
+renderFragment(adwords);
+
