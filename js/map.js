@@ -6,15 +6,20 @@ var CHECKIN_AND_OUT = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var AMOUNT_ADWORDS = 8;
 
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
+
 var adwords = [];
+var pins = [];
 
 var swapFeatures = FEATURES;
 var mapCard = document.querySelector('.map');
 var mapCardTemplate = document.querySelector('template').content.querySelector('.map__card');
 var mapElementsPin = mapCard.querySelector('.map__pins');
 var pinTemplate = document.querySelector('template').content.querySelector('.map__pin');
-
 var mapVisible = document.querySelector('.map');
+
+var popupClose;
 
 var getRandomIndexArray = function (targetArray) {
   return Math.floor(Math.random() * targetArray.length);
@@ -70,6 +75,35 @@ var getAdwordsArray = function () {
   }
 };
 
+var removePinActive = function () {
+  for (var i = 0; i < pins.length; i++) {
+    pins[i].classList.remove('map__pin--active');
+  }
+  mapCard.removeChild(mapCard.children[1]);
+};
+
+var installPinActive = function (evt) {
+  for (var i = 0; i < pins.length; i++) {
+    pins[i].classList.remove('map__pin--active');
+  }
+
+  evt.classList.add('map__pin--active');
+};
+
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    removePinActive();
+    popupClose = 0;
+  }
+};
+
+var onPopipEnterPress = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    removePinActive();
+    popupClose = 0;
+  }
+};
+
 var renderPin = function (ads) {
   var pinElement = pinTemplate.cloneNode(true);
   var avatarImageUrl = pinElement.children;
@@ -77,8 +111,43 @@ var renderPin = function (ads) {
   pinElement.setAttribute('style', 'left:' + ads.location.x + 'px;' + ' ' + 'top:' + ads.location.y + 'px;');
   avatarImageUrl[0].setAttribute('src', ads.author.avatar);
 
+  pinElement.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      onClickPin();
+    }
+  });
+
+  document.addEventListener('keydown', onPopupEscPress);
+
+  pinElement.addEventListener('click', onClickPin);
+
+  function onClickPin() {
+    pins = document.querySelectorAll('.map__pin');
+
+    if (!pinElement.classList.contains('map__pin--active') && popupClose) {
+      removePinActive();
+    }
+
+    if (pinElement.classList.contains('map__pin--active')) {
+      return;
+    }
+
+    installPinActive(pinElement);
+    mapCard.insertBefore(renderCard(ads), mapCard.lastChild.previousSibling);
+
+    popupClose = mapCard.querySelector('.popup__close');
+
+    popupClose.addEventListener('click', function () {
+      removePinActive();
+      popupClose = 0;
+    });
+
+    popupClose.addEventListener('keydown', onPopipEnterPress);
+  }
+
   return pinElement;
 };
+
 
 var insertListItem = function (ads, cardListFeatures) {
 
@@ -128,11 +197,37 @@ var renderFragment = function (ads) {
     fragment.appendChild(renderPin(ads[k]));
   }
   mapElementsPin.appendChild(fragment);
-
-  mapCard.insertBefore(renderCard(ads[0]), mapCard.children[1]);
 };
 
-mapVisible.classList.remove('map--faded');
-
 getAdwordsArray();
-renderFragment(adwords);
+
+var onClickMainPin = function () {
+  mapVisible.classList.remove('map--faded');
+  renderFragment(adwords);
+  mapVisible.removeEventListener('click', onClickMainPin);
+};
+
+mapVisible.addEventListener('click', onClickMainPin);
+
+
+//
+// mapCard.addEventListener('click', function () {
+//   var mapPin = mapCard.querySelector('map__pin--active');
+//   if (mapPin.classList.contains('map__pin--active')) {
+//     for (var i = 0; i < pins.length; i++) {
+//       pins[i].classList.remove('map__pin--active');
+//     }
+//     mapCard.removeChild(mapCard.children[1]);
+//   }
+// });
+
+// if (popupClose) {
+//   popupClose.addEventListener('click', function () {
+//     pins = mapCard.querySelectorAll('.map__pin');
+//
+//     for (var i = 0; i < pins.length; i++) {
+//       pins[i].classList.remove('map__pin--active');
+//     }
+//     mapCard.removeChild(mapCard.children[1]);
+//   });
+// }
