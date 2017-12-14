@@ -208,26 +208,3 @@ var onClickMainPin = function () {
 };
 
 mapVisible.addEventListener('click', onClickMainPin);
-
-
-//
-// mapCard.addEventListener('click', function () {
-//   var mapPin = mapCard.querySelector('map__pin--active');
-//   if (mapPin.classList.contains('map__pin--active')) {
-//     for (var i = 0; i < pins.length; i++) {
-//       pins[i].classList.remove('map__pin--active');
-//     }
-//     mapCard.removeChild(mapCard.children[1]);
-//   }
-// });
-
-// if (popupClose) {
-//   popupClose.addEventListener('click', function () {
-//     pins = mapCard.querySelectorAll('.map__pin');
-//
-//     for (var i = 0; i < pins.length; i++) {
-//       pins[i].classList.remove('map__pin--active');
-//     }
-//     mapCard.removeChild(mapCard.children[1]);
-//   });
-// }
