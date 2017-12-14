@@ -18,6 +18,16 @@ var mapCardTemplate = document.querySelector('template').content.querySelector('
 var mapElementsPin = mapCard.querySelector('.map__pins');
 var pinTemplate = document.querySelector('template').content.querySelector('.map__pin');
 var mapVisible = document.querySelector('.map');
+var noticeForm = document.querySelector('.notice__form');
+
+var titleAdwords = noticeForm.querySelector('#title');
+var timein = noticeForm.querySelector('#timein');
+var timeout = noticeForm.querySelector('#timeout');
+
+timein.addEventListener('change', function (evt) {
+// доработать обработчик инфу почитать на http://www.tigir.com/javascript_select.htm
+});
+
 
 var popupClose;
 
@@ -203,8 +213,19 @@ getAdwordsArray();
 
 var onClickMainPin = function () {
   mapVisible.classList.remove('map--faded');
+  noticeForm.classList.remove('notice__form--disabled');
+
   renderFragment(adwords);
   mapVisible.removeEventListener('click', onClickMainPin);
 };
 
 mapVisible.addEventListener('click', onClickMainPin);
+
+titleAdwords.addEventListener('input', function (evt) {
+  var target = evt.target;
+  if (target.value.length < 30) {
+    target.setCustomValidity('Имя должно состоять минимум из 30-х символов');
+  } else {
+    target.setCustomValidity('');
+  }
+});
