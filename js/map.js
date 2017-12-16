@@ -58,15 +58,6 @@ var price = noticeForm.querySelector('#price');
 var roomNumber = noticeForm.querySelector('#room_number');
 var capacityRoom = noticeForm.querySelector('#capacity');
 
-var onClickCapacityRoomSync = function () {
-  var index = roomNumber.selectedIndex;
-  if (index === 3) {
-    capacityRoom.selectedIndex = 3;
-  } else {
-    capacityRoom.selectedIndex = 2 - index;
-  }
-};
-
 var onClickSelectSync = function (eventTarget, target) {
   var index = eventTarget.selectedIndex;
   target.selectedIndex = index;
@@ -79,8 +70,8 @@ var onClickHousingSync = function () {
 };
 
 function roomNumberChangeHandler() {
-  if (capacity.options.length > 0) {
-    [].forEach.call(capacity.options, function (item) {
+  if (capacityRoom.options.length > 0) {
+    [].forEach.call(capacityRoom.options, function (item) {
       item.selected = (ROOMS_CAPACITY[roomNumber.value][0] === item.value) ? true : false;
       item.hidden = (ROOMS_CAPACITY[roomNumber.value].indexOf(item.value) >= 0) ? false : true;
     });
