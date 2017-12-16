@@ -22,6 +22,14 @@ var TYPES = [
     price: '10000'
   }
 ];
+
+var ROOMS_CAPACITY = {
+  '1': ['1'],
+  '2': ['2', '1'],
+  '3': ['3', '2', '1'],
+  '100': ['0']
+};
+
 var CHECKIN_AND_OUT = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var AMOUNT_ADWORDS = 8;
@@ -67,7 +75,17 @@ var onClickSelectSync = function (eventTarget, target) {
 var onClickHousingSync = function () {
   var index = typeHousing.selectedIndex;
   price.setAttribute('min', TYPES[index].price);
+  price.setAttribute('placeholder', TYPES[index].price);
 };
+
+function roomNumberChangeHandler() {
+  if (capacity.options.length > 0) {
+    [].forEach.call(capacity.options, function (item) {
+      item.selected = (ROOMS_CAPACITY[roomNumber.value][0] === item.value) ? true : false;
+      item.hidden = (ROOMS_CAPACITY[roomNumber.value].indexOf(item.value) >= 0) ? false : true;
+    });
+  }
+}
 
 timein.addEventListener('change', function () {
   onClickSelectSync(timein, timeout);
@@ -79,7 +97,7 @@ timeout.addEventListener('change', function () {
 
 typeHousing.addEventListener('change', onClickHousingSync);
 
-roomNumber.addEventListener('change', onClickCapacityRoomSync);
+roomNumber.addEventListener('change', roomNumberChangeHandler);
 
 var getRandomIndexArray = function (targetArray) {
   return Math.floor(Math.random() * targetArray.length);
@@ -279,3 +297,4 @@ titleAdwords.addEventListener('input', function (evt) {
     target.setCustomValidity('');
   }
 });
+
