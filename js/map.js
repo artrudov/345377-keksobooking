@@ -3,14 +3,14 @@
 var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var TYPES = [
   {
-    en: 'bungalo',
-    ru: 'Бунгало',
-    price: '0'
-  },
-  {
     en: 'flat',
     ru: 'Квартира',
     price: '1000'
+  },
+  {
+    en: 'bungalo',
+    ru: 'Бунгало',
+    price: '0'
   },
   {
     en: 'house',
@@ -78,6 +78,9 @@ function roomNumberChangeHandler() {
   }
 }
 
+roomNumberChangeHandler();
+roomNumber.addEventListener('change', roomNumberChangeHandler);
+
 timein.addEventListener('change', function () {
   onClickSelectSync(timein, timeout);
 });
@@ -87,8 +90,6 @@ timeout.addEventListener('change', function () {
 });
 
 typeHousing.addEventListener('change', onClickHousingSync);
-
-roomNumber.addEventListener('change', roomNumberChangeHandler);
 
 var getRandomIndexArray = function (targetArray) {
   return Math.floor(Math.random() * targetArray.length);
@@ -271,11 +272,16 @@ var renderFragment = function (ads) {
 getAdwordsArray();
 
 var onClickMainPin = function () {
+  var fieldset = noticeForm.querySelectorAll('fieldset');
+
   mapVisible.classList.remove('map--faded');
   noticeForm.classList.remove('notice__form--disabled');
-
   renderFragment(adwords);
   mapVisible.removeEventListener('click', onClickMainPin);
+
+  for (var i = 1; i < fieldset.length; i++) {
+    fieldset[i].removeAttribute('disabled');
+  }
 };
 
 mapVisible.addEventListener('click', onClickMainPin);
