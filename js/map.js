@@ -3,14 +3,14 @@
 var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var TYPES = [
   {
-    en: 'bungalo',
-    ru: 'Бунгало',
-    price: '0'
-  },
-  {
     en: 'flat',
     ru: 'Квартира',
     price: '1000'
+  },
+  {
+    en: 'bungalo',
+    ru: 'Бунгало',
+    price: '0'
   },
   {
     en: 'house',
@@ -22,6 +22,14 @@ var TYPES = [
     price: '10000'
   }
 ];
+
+var ROOMS_CAPACITY = {
+  '1': ['1'],
+  '2': ['2', '1'],
+  '3': ['3', '2', '1'],
+  '100': ['0']
+};
+
 var CHECKIN_AND_OUT = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var AMOUNT_ADWORDS = 8;
@@ -50,15 +58,6 @@ var price = noticeForm.querySelector('#price');
 var roomNumber = noticeForm.querySelector('#room_number');
 var capacityRoom = noticeForm.querySelector('#capacity');
 
-var onClickCapacityRoomSync = function () {
-  var index = roomNumber.selectedIndex;
-  if (index === 3) {
-    capacityRoom.selectedIndex = 3;
-  } else {
-    capacityRoom.selectedIndex = 2 - index;
-  }
-};
-
 var onClickSelectSync = function (eventTarget, target) {
   var index = eventTarget.selectedIndex;
   target.selectedIndex = index;
@@ -67,7 +66,20 @@ var onClickSelectSync = function (eventTarget, target) {
 var onClickHousingSync = function () {
   var index = typeHousing.selectedIndex;
   price.setAttribute('min', TYPES[index].price);
+  price.setAttribute('placeholder', TYPES[index].price);
 };
+
+function roomNumberChangeHandler() {
+  if (capacityRoom.options.length > 0) {
+    [].forEach.call(capacityRoom.options, function (item) {
+      item.selected = (ROOMS_CAPACITY[roomNumber.value][0] === item.value) ? true : false;
+      item.hidden = (ROOMS_CAPACITY[roomNumber.value].indexOf(item.value) >= 0) ? false : true;
+    });
+  }
+}
+
+roomNumberChangeHandler();
+roomNumber.addEventListener('change', roomNumberChangeHandler);
 
 timein.addEventListener('change', function () {
   onClickSelectSync(timein, timeout);
@@ -78,8 +90,6 @@ timeout.addEventListener('change', function () {
 });
 
 typeHousing.addEventListener('change', onClickHousingSync);
-
-roomNumber.addEventListener('change', onClickCapacityRoomSync);
 
 var getRandomIndexArray = function (targetArray) {
   return Math.floor(Math.random() * targetArray.length);
@@ -262,11 +272,16 @@ var renderFragment = function (ads) {
 getAdwordsArray();
 
 var onClickMainPin = function () {
+  var fieldset = noticeForm.querySelectorAll('fieldset');
+
   mapVisible.classList.remove('map--faded');
   noticeForm.classList.remove('notice__form--disabled');
-
   renderFragment(adwords);
   mapVisible.removeEventListener('click', onClickMainPin);
+
+  for (var i = 1; i < fieldset.length; i++) {
+    fieldset[i].removeAttribute('disabled');
+  }
 };
 
 mapVisible.addEventListener('click', onClickMainPin);
@@ -279,3 +294,4 @@ titleAdwords.addEventListener('input', function (evt) {
     target.setCustomValidity('');
   }
 });
+
