@@ -26,7 +26,6 @@
     }
   };
 
-
   var dialogHandle = document.querySelector('.map__pin--main');
   var address = window.form.address;
 
