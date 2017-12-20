@@ -90,6 +90,7 @@
       return pinElement;
     },
     mapVisible: mapVisible,
-    mapElementsPin: mapElementsPin
+    mapElementsPin: mapElementsPin,
+    map: mapCard
   };
 })();

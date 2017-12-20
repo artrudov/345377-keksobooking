@@ -3,6 +3,8 @@
 (function () {
   var MAX_TOP = 500;
   var MIN_TOP = 100;
+  var MIN_LEFT = 0;
+  var MAX_RIGHT = window.pin.map.offsetWidth;
 
   var renderFragment = function (ads) {
     var fragment = document.createDocumentFragment();
@@ -36,10 +38,15 @@
   dialogHandle.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
 
-
     var startCoords = {
       x: evt.clientX,
       y: evt.clientY
+    };
+
+    address.value = 'x: ' + dialogHandle.offsetLeft + ' y: ' + dialogHandle.offsetTop;
+
+    var setPostitionPin = function (value1, value2) {
+      address.value = 'x: ' + value1 + ' y: ' + value2 + 'px';
     };
 
     var onMouseMove = function (moveEvt) {
@@ -62,12 +69,22 @@
 
       if (dialogHandle.offsetTop - shift.y > MAX_TOP) {
         dialogHandle.style.top = MAX_TOP + 'px';
-        address.value = 'x: ' + (dialogHandle.offsetLeft - shift.x) + ' y: ' + MAX_TOP + 'px';
+        setPostitionPin(dialogHandle.offsetLeft - shift.x, MAX_TOP);
       }
 
       if (dialogHandle.offsetTop - shift.y < MIN_TOP) {
         dialogHandle.style.top = MIN_TOP + 'px';
-        address.value = 'x: ' + (dialogHandle.offsetLeft - shift.x) + ' y: ' + MIN_TOP + 'px';
+        setPostitionPin(dialogHandle.offsetLeft - shift.x, MIN_TOP);
+      }
+
+      if (dialogHandle.offsetLeft - shift.x < MIN_LEFT) {
+        dialogHandle.style.left = MIN_LEFT;
+        setPostitionPin(MIN_LEFT, dialogHandle.offsetTop - shift.y);
+      }
+
+      if (dialogHandle.offsetLeft - shift.x > MAX_RIGHT) {
+        dialogHandle.style.left = MAX_RIGHT + 'px';
+        setPostitionPin(MAX_RIGHT, dialogHandle.offsetTop - shift.y);
       }
     };
 
