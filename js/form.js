@@ -10,47 +10,47 @@
 
   var noticeForm = document.querySelector('.notice__form');
   var titleAdwords = noticeForm.querySelector('#title');
-  var timein = noticeForm.querySelector('#timein');
-  var timeout = noticeForm.querySelector('#timeout');
-  var typeHousing = noticeForm.querySelector('#type');
-  var price = noticeForm.querySelector('#price');
-  var roomNumber = noticeForm.querySelector('#room_number');
-  var capacityRoom = noticeForm.querySelector('#capacity');
-  var addressHous = noticeForm.querySelector('#address');
+  // var timein = noticeForm.querySelector('#timein');
+  // var timeout = noticeForm.querySelector('#timeout');
+  // var typeHousing = noticeForm.querySelector('#type');
+  // var price = noticeForm.querySelector('#price');
+  // var roomNumber = noticeForm.querySelector('#room_number');
+  // var capacityRoom = noticeForm.querySelector('#capacity');
+  var addressHouse = noticeForm.querySelector('#address');
 
-  var onClickSelectSync = function (eventTarget, target) {
-    var index = eventTarget.selectedIndex;
-    target.selectedIndex = index;
-  };
+  // var onClickSelectSync = function (eventTarget, target) {
+  //   var index = eventTarget.selectedIndex;
+  //   target.selectedIndex = index;
+  // };
 
-  var onClickHousingSync = function () {
-    var index = typeHousing.selectedIndex;
-    price.setAttribute('min', window.data.typesArray[index].price);
-    price.setAttribute('placeholder', window.data.typesArray[index].price);
-  };
+  // var onClickHousingSync = function () {
+  //   var index = typeHousing.selectedIndex;
+  //   price.setAttribute('min', window.data.typesArray[index].price);
+  //   price.setAttribute('placeholder', window.data.typesArray[index].price);
+  // };
 
-  function roomNumberChangeHandler() {
-    if (capacityRoom.options.length > 0) {
-      [].forEach.call(capacityRoom.options, function (item) {
-        item.selected = (ROOMS_CAPACITY[roomNumber.value][0] === item.value) ? true : false;
-        item.hidden = (ROOMS_CAPACITY[roomNumber.value].indexOf(item.value) >= 0) ? false : true;
-      });
-    }
-  }
+  // function roomNumberChangeHandler() {
+  //   if (capacityRoom.options.length > 0) {
+  //     [].forEach.call(capacityRoom.options, function (item) {
+  //       item.selected = (ROOMS_CAPACITY[roomNumber.value][0] === item.value) ? true : false;
+  //       item.hidden = (ROOMS_CAPACITY[roomNumber.value].indexOf(item.value) >= 0) ? false : true;
+  //     });
+  //   }
+  // }
 
-  roomNumberChangeHandler();
+  // roomNumberChangeHandler();
 
-  timein.addEventListener('change', function () {
-    onClickSelectSync(timein, timeout);
-  });
+  // timein.addEventListener('change', function () {
+  //   onClickSelectSync(timein, timeout);
+  // });
+  //
+  // timeout.addEventListener('change', function () {
+  //   onClickSelectSync(timeout, timein);
+  // });
 
-  timeout.addEventListener('change', function () {
-    onClickSelectSync(timeout, timein);
-  });
-
-  typeHousing.addEventListener('change', onClickHousingSync);
-
-  roomNumber.addEventListener('change', roomNumberChangeHandler);
+  // typeHousing.addEventListener('change', onClickHousingSync);
+  //
+  // roomNumber.addEventListener('change', roomNumberChangeHandler);
 
   titleAdwords.addEventListener('input', function (evt) {
     var target = evt.target;
@@ -62,7 +62,7 @@
   });
 
   window.form = {
-    address: addressHous,
+    address: addressHouse,
     noticeForm: noticeForm
   };
 })();
