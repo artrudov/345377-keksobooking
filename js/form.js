@@ -16,6 +16,7 @@
   var price = noticeForm.querySelector('#price');
   var roomNumber = noticeForm.querySelector('#room_number');
   var capacityRoom = noticeForm.querySelector('#capacity');
+  var addressHous = noticeForm.querySelector('#address');
 
   var onClickSelectSync = function (eventTarget, target) {
     var index = eventTarget.selectedIndex;
@@ -61,6 +62,7 @@
   });
 
   window.form = {
+    address: addressHous,
     noticeForm: noticeForm
   };
 })();
