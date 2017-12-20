@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-
-  var HEIGHT_PIN = 22;
+  var MAX_TOP = 500;
+  var MIN_TOP = 100;
 
   var renderFragment = function (ads) {
     var fragment = document.createDocumentFragment();
@@ -59,16 +59,16 @@
       dialogHandle.style.top = (dialogHandle.offsetTop - shift.y) + 'px';
       dialogHandle.style.left = (dialogHandle.offsetLeft - shift.x) + 'px';
 
-      address.value = 'x:' + (dialogHandle.offsetLeft - shift.x) + ' y:' + (dialogHandle.offsetTop - shift.y);
+      address.value = 'x: ' + (dialogHandle.offsetLeft - shift.x) + ' y: ' + (dialogHandle.offsetTop - shift.y);
 
-      if (dialogHandle.offsetTop - shift.y > 500) {
-        dialogHandle.style.top = '500px';
-        address.value = 'x: ' + (dialogHandle.offsetLeft - shift.x) + ' y: 500px';
+      if (dialogHandle.offsetTop - shift.y > MAX_TOP) {
+        dialogHandle.style.top = MAX_TOP + 'px';
+        address.value = 'x: ' + (dialogHandle.offsetLeft - shift.x) + ' y: ' + MAX_TOP + 'px';
       }
 
-      if (dialogHandle.offsetTop - shift.y < 100) {
-        dialogHandle.style.top = '100px';
-        address.value = 'x: ' + (dialogHandle.offsetLeft - shift.x) + ' y: 100px';
+      if (dialogHandle.offsetTop - shift.y < MIN_TOP) {
+        dialogHandle.style.top = MIN_TOP + 'px';
+        address.value = 'x: ' + (dialogHandle.offsetLeft - shift.x) + ' y: ' + MIN_TOP + 'px';
       }
     };
 
