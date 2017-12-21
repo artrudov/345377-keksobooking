@@ -89,6 +89,7 @@
 
   window.data = {
     adwordsArray: adwords,
-    typesArray: TYPES
+    typesArray: TYPES,
+    checkInOut: CHECKIN_AND_OUT
   };
 })();

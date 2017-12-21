@@ -8,25 +8,44 @@
     '100': ['0']
   };
 
+  var typeAndPrice = {
+    'flat': 1000,
+    'bungalo': 0,
+    'house': 5000,
+    'palace': 10000
+  };
+
   var noticeForm = document.querySelector('.notice__form');
   var titleAdwords = noticeForm.querySelector('#title');
   var timein = noticeForm.querySelector('#timein');
   var timeout = noticeForm.querySelector('#timeout');
+  var timeArray = window.data.checkInOut;
   var typeHousing = noticeForm.querySelector('#type');
   var price = noticeForm.querySelector('#price');
   var roomNumber = noticeForm.querySelector('#room_number');
   var capacityRoom = noticeForm.querySelector('#capacity');
-  var addressHous = noticeForm.querySelector('#address');
+  var addressHouse = noticeForm.querySelector('#address');
 
-  var onClickSelectSync = function (eventTarget, target) {
-    var index = eventTarget.selectedIndex;
-    target.selectedIndex = index;
+  var syncValues = function (element, value) {
+    element.value = value;
+  };
+
+  var onSyncTimeIn = function () {
+    window.synchronizeFields(timein, timeout, timeArray, timeArray, syncValues);
+  };
+
+  var onSyncTimeOut = function () {
+    window.synchronizeFields(timeout, timein, timeArray, timeArray, syncValues);
+  };
+
+  var syncValueWithMin = function (element, value) {
+    element.min = value;
   };
 
   var onClickHousingSync = function () {
     var index = typeHousing.selectedIndex;
-    price.setAttribute('min', window.data.typesArray[index].price);
     price.setAttribute('placeholder', window.data.typesArray[index].price);
+    window.synchronizeFields(typeHousing, price, Object.keys(typeAndPrice), Object.values(typeAndPrice), syncValueWithMin);
   };
 
   function roomNumberChangeHandler() {
@@ -40,16 +59,9 @@
 
   roomNumberChangeHandler();
 
-  timein.addEventListener('change', function () {
-    onClickSelectSync(timein, timeout);
-  });
-
-  timeout.addEventListener('change', function () {
-    onClickSelectSync(timeout, timein);
-  });
-
+  timein.addEventListener('change', onSyncTimeIn);
+  timeout.addEventListener('change', onSyncTimeOut);
   typeHousing.addEventListener('change', onClickHousingSync);
-
   roomNumber.addEventListener('change', roomNumberChangeHandler);
 
   titleAdwords.addEventListener('input', function (evt) {
@@ -62,7 +74,7 @@
   });
 
   window.form = {
-    address: addressHous,
+    address: addressHouse,
     noticeForm: noticeForm
   };
 })();
