@@ -57,6 +57,10 @@
     }
   }
 
+  var resetForm = function () {
+    noticeForm.reset();
+  };
+
   roomNumberChangeHandler();
 
   timein.addEventListener('change', onSyncTimeIn);
@@ -71,6 +75,11 @@
     } else {
       target.setCustomValidity('');
     }
+  });
+
+  noticeForm.addEventListener('submit', function(evt) {
+    window.backend.upload(new FormData(noticeForm), resetForm, window.data.messageError);
+    evt.preventDefault();
   });
 
   window.form = {
