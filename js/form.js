@@ -57,6 +57,16 @@
     }
   }
 
+  var resetForm = function () {
+    noticeForm.reset();
+  };
+
+  var uploadForm = function (evt) {
+    window.backend.upload(new FormData(noticeForm), resetForm, window.data.messageError);
+    evt.preventDefault();
+
+  };
+
   roomNumberChangeHandler();
 
   timein.addEventListener('change', onSyncTimeIn);
@@ -72,6 +82,8 @@
       target.setCustomValidity('');
     }
   });
+
+  noticeForm.addEventListener('submit', uploadForm);
 
   window.form = {
     address: addressHouse,

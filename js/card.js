@@ -31,14 +31,14 @@
       var cardListFeatures = cardElement.querySelector('.popup__features');
 
       cardTitle.textContent = ads.offer.title;
-      cardAddress.innerHTML = ads.offer.address;
-      cardPrice.innerHTML = ads.offer.price + '&#x20bd;/ночь';
-      cardParagraph[2].innerHTML = ads.offer.rooms + ' комнаты для ' + ads.offer.guests + ' гостей';
-      cardParagraph[3].innerHTML = 'Заезд после ' + ads.offer.ckeckin + ', выезд до ' + ads.offer.checkout;
-      cardParagraph[4].innerHTML = ads.offer.description;
+      cardAddress.textContent = ads.offer.address;
+      cardPrice.textContent = ads.offer.price + '\u20bd/ночь';
+      cardParagraph[2].textContent = ads.offer.rooms + ' комнаты для ' + ads.offer.guests + ' гостей';
+      cardParagraph[3].textContent = 'Заезд после ' + ads.offer.ckeckin + ', выезд до ' + ads.offer.checkout;
+      cardParagraph[4].textContent = ads.offer.description;
       cardAvatar.setAttribute('src', ads.author.avatar);
 
-      cardType.innerHTML = ads.offer.type.ru;
+      cardType.textContent = ads.offer.type.ru;
 
       insertListItem(ads, cardListFeatures);
 
