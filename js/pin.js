@@ -6,7 +6,6 @@
   var pinTemplate = document.querySelector('template').content.querySelector('.map__pin');
   var mapVisible = document.querySelector('.map');
 
-
   window.pin = {
     renderPin: function (ads) {
       var pinElement = pinTemplate.cloneNode(true);

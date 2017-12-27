@@ -5,15 +5,19 @@
   var MIN_TOP = 100;
   var MIN_LEFT = 0;
   var MAX_RIGHT = window.pin.map.offsetWidth;
+  var AMOUNT_ADWORDS = 5;
+  var TYPES = ['all', 'flat', 'house', 'bungalo'];
+  var PRICES = ['all', '10000 - 500000\u20bd', 'до 10000\u20bd', 'от 500000\u20bd'];
 
   var renderFragment = function (ads) {
     var fragment = document.createDocumentFragment();
 
-    for (var k = 0; k < ads.length; k++) {
+    for (var k = 0; k < AMOUNT_ADWORDS; k++) {
       fragment.appendChild(window.pin.renderPin(ads[k]));
     }
     window.pin.mapElementsPin.appendChild(fragment);
   };
+
 
   var onClickMainPin = function () {
     var fieldset = window.form.noticeForm.querySelectorAll('fieldset');
@@ -97,5 +101,111 @@
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
+
+    var containerFiltres = document.querySelector('.map__filters');
+    var typeFilter = containerFiltres.querySelector('#housing-type');
+    var priceFilter = containerFiltres.querySelector('#housing-price');
+    var roomsFilter = containerFiltres.querySelector('#housing-rooms');
+    var guestFilter = containerFiltres.querySelector('#housing-guests');
+    var featuresFilter = containerFiltres.querySelectorAll('input[type=checkbox]');
+
+    var swapArray = [];
+
+    var getTypeFilter = function (value) {
+      swapArray = window.data.adwordsArray.filter(function (adwords) {
+        return adwords.offer.type === value;
+      });
+    };
+
+    var getRoomsFilter = function (value) {
+      value = Number(value);
+      swapArray = window.data.adwordsArray.filter(function (adwords) {
+        return adwords.offer.rooms === value;
+      });
+    };
+
+    var getGuestsFilter = function (value) {
+      value = Number(value);
+      swapArray = window.data.adwordsArray.filter(function (adwords) {
+        return adwords.offer.guests === value;
+      });
+    };
+
+    var onCgangeTypeFilter = function () {
+      var index = typeFilter.selectedIndex;
+      var value = typeFilter.options[index].value;
+
+      switch (value) {
+        case 'any':
+          swapArray = window.data.adwordsArray.slice(0, 5);
+          break;
+        default:
+          getTypeFilter(value);
+      }
+
+      return swapArray;
+    };
+
+    var onChangePriceFilter = function () {
+      var index = priceFilter.selectedIndex;
+      var value = priceFilter.options[index].value;
+      switch (value) {
+        case 'any':
+          swapArray = window.data.adwordsArray.slice(0, 5);
+          break;
+        case 'middle':
+          swapArray = window.data.adwordsArray.filter(function (adwords) {
+            return (10000 <= adwords.offer.price && adwords.offer.price <= 50000);
+          });
+          break;
+        case 'low':
+          swapArray = window.data.adwordsArray.filter(function (adwords) {
+            return 10000 >= adwords.offer.price;
+          });
+          break;
+        case 'high':
+          swapArray = window.data.adwordsArray.filter(function (adwords) {
+            return 50000 <= adwords.offer.price;
+          });
+          break;
+      }
+
+      return swapArray;
+    };
+
+    var onChangeRoomsFilter = function () {
+      var index = roomsFilter.selectedIndex;
+      var value = roomsFilter.options[index].value;
+
+      switch (value) {
+        case 'any':
+          swapArray = window.data.adwordsArray.slice(0, 5);
+          break;
+        default:
+          getRoomsFilter(value);
+      }
+
+      return swapArray;
+    };
+
+    var onChangeGuestsFilter = function () {
+      var index = guestFilter.selectedIndex;
+      var value = guestFilter.options[index].value;
+
+      switch (value) {
+        case 'any':
+          swapArray = window.data.adwordsArray.slice(0, 5);
+          break;
+        default:
+          getGuestsFilter(value);
+      }
+
+      return swapArray;
+    };
+
+    typeFilter.addEventListener('change', onCgangeTypeFilter);
+    priceFilter.addEventListener('change', onChangePriceFilter);
+    roomsFilter.addEventListener('change', onChangeRoomsFilter);
+    guestFilter.addEventListener('change', onChangeGuestsFilter);
   });
 })();
