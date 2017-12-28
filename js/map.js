@@ -6,14 +6,15 @@
   var MIN_LEFT = 0;
   var MAX_RIGHT = window.pin.map.offsetWidth;
   var AMOUNT_ADWORDS = 5;
-  var TYPES = ['all', 'flat', 'house', 'bungalo'];
-  var PRICES = ['all', '10000 - 500000\u20bd', 'до 10000\u20bd', 'от 500000\u20bd'];
+  var DEBOUNCE_INTERVAL = 500;
 
-  var renderFragment = function (ads) {
+  var renderFragment = function (adwords, count) {
     var fragment = document.createDocumentFragment();
-
-    for (var k = 0; k < AMOUNT_ADWORDS; k++) {
-      fragment.appendChild(window.pin.renderPin(ads[k]));
+    if (count > AMOUNT_ADWORDS) {
+      count = AMOUNT_ADWORDS;
+    }
+    for (var i = 0; i < count; i++) {
+      fragment.appendChild(window.pin.renderPin(adwords[i]));
     }
     window.pin.mapElementsPin.appendChild(fragment);
   };
@@ -24,7 +25,7 @@
 
     window.pin.mapVisible.classList.remove('map--faded');
     window.form.noticeForm.classList.remove('notice__form--disabled');
-    renderFragment(window.data.adwordsArray);
+    renderFragment(window.data.adwordsArray, AMOUNT_ADWORDS);
     window.pin.mapVisible.removeEventListener('click', onClickMainPin);
 
     for (var i = 1; i < fieldset.length; i++) {
@@ -101,111 +102,89 @@
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
-
-    var containerFiltres = document.querySelector('.map__filters');
-    var typeFilter = containerFiltres.querySelector('#housing-type');
-    var priceFilter = containerFiltres.querySelector('#housing-price');
-    var roomsFilter = containerFiltres.querySelector('#housing-rooms');
-    var guestFilter = containerFiltres.querySelector('#housing-guests');
-    var featuresFilter = containerFiltres.querySelectorAll('input[type=checkbox]');
-
-    var swapArray = [];
-
-    var getTypeFilter = function (value) {
-      swapArray = window.data.adwordsArray.filter(function (adwords) {
-        return adwords.offer.type === value;
-      });
-    };
-
-    var getRoomsFilter = function (value) {
-      value = Number(value);
-      swapArray = window.data.adwordsArray.filter(function (adwords) {
-        return adwords.offer.rooms === value;
-      });
-    };
-
-    var getGuestsFilter = function (value) {
-      value = Number(value);
-      swapArray = window.data.adwordsArray.filter(function (adwords) {
-        return adwords.offer.guests === value;
-      });
-    };
-
-    var onCgangeTypeFilter = function () {
-      var index = typeFilter.selectedIndex;
-      var value = typeFilter.options[index].value;
-
-      switch (value) {
-        case 'any':
-          swapArray = window.data.adwordsArray.slice(0, 5);
-          break;
-        default:
-          getTypeFilter(value);
-      }
-
-      return swapArray;
-    };
-
-    var onChangePriceFilter = function () {
-      var index = priceFilter.selectedIndex;
-      var value = priceFilter.options[index].value;
-      switch (value) {
-        case 'any':
-          swapArray = window.data.adwordsArray.slice(0, 5);
-          break;
-        case 'middle':
-          swapArray = window.data.adwordsArray.filter(function (adwords) {
-            return (10000 <= adwords.offer.price && adwords.offer.price <= 50000);
-          });
-          break;
-        case 'low':
-          swapArray = window.data.adwordsArray.filter(function (adwords) {
-            return 10000 >= adwords.offer.price;
-          });
-          break;
-        case 'high':
-          swapArray = window.data.adwordsArray.filter(function (adwords) {
-            return 50000 <= adwords.offer.price;
-          });
-          break;
-      }
-
-      return swapArray;
-    };
-
-    var onChangeRoomsFilter = function () {
-      var index = roomsFilter.selectedIndex;
-      var value = roomsFilter.options[index].value;
-
-      switch (value) {
-        case 'any':
-          swapArray = window.data.adwordsArray.slice(0, 5);
-          break;
-        default:
-          getRoomsFilter(value);
-      }
-
-      return swapArray;
-    };
-
-    var onChangeGuestsFilter = function () {
-      var index = guestFilter.selectedIndex;
-      var value = guestFilter.options[index].value;
-
-      switch (value) {
-        case 'any':
-          swapArray = window.data.adwordsArray.slice(0, 5);
-          break;
-        default:
-          getGuestsFilter(value);
-      }
-
-      return swapArray;
-    };
-
-    typeFilter.addEventListener('change', onCgangeTypeFilter);
-    priceFilter.addEventListener('change', onChangePriceFilter);
-    roomsFilter.addEventListener('change', onChangeRoomsFilter);
-    guestFilter.addEventListener('change', onChangeGuestsFilter);
   });
+
+  var PRICE_MIDDLE_MIN = 10000;
+  var PRICE_MIDDLE_MAX = 50000;
+
+  var priceOptions = {
+    'low': function (price) {
+      return price < PRICE_MIDDLE_MIN;
+    },
+    'middle': function (price) {
+      return price >= PRICE_MIDDLE_MIN && price <= PRICE_MIDDLE_MAX;
+    },
+    'high': function (price) {
+      return price > PRICE_MIDDLE_MAX;
+    }
+  };
+
+  var filteringPrice = function (list, value) {
+    return list.filter(function (element) {
+      return priceOptions[value](element.offer.price);
+    });
+  };
+
+  var filteringValue = function (list, value, type) {
+    return list.filter(function (element) {
+      if (type === 'guests') {
+        return element.offer[type] >= parseInt(value, 0);
+      } else {
+        return element.offer[type].toString() === value;
+      }
+    });
+  };
+
+  var filterFeatures = function (list, feature) {
+    return list.filter(function (element) {
+      return element.offer.features.indexOf(feature) !== -1;
+    });
+  };
+
+  var filters = document.querySelector('.map__filters');
+  var newArray = [];
+
+  var getFilteredData = function (defaultArray) {
+    var checkFeatures = document.querySelectorAll('.map__filter-set input[type="checkbox"]:checked');
+    var filtersSelects = filters.querySelectorAll('select');
+
+    newArray = defaultArray.slice();
+
+    Array.from(filtersSelects).filter(function (element) {
+      return element.value !== 'any';
+    }).forEach(function (element) {
+      var type = element.name.split('-')[1];
+      newArray = (type === 'price') ? filteringPrice(newArray, element.value) : filteringValue(newArray, element.value, type);
+    });
+
+    checkFeatures.forEach(function (element) {
+      newArray = filterFeatures(newArray, element.value);
+    });
+
+    return newArray;
+  };
+
+  var renderFilterData = function () {
+    var renderPins = document.querySelector('.map__pins');
+
+    while (dialogHandle.nextSibling) {
+      renderPins.removeChild(renderPins.lastChild);
+    }
+
+    renderFragment(newArray, newArray.length);
+  };
+
+  var lastTimeout;
+  var debounce = function (action) {
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(action, DEBOUNCE_INTERVAL);
+  };
+
+  filters.addEventListener('change', function () {
+    getFilteredData(window.data.adwordsArray);
+    debounce(renderFilterData);
+  });
+
 })();
