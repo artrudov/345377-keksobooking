@@ -24,12 +24,11 @@
   ];
 
   var CHECKIN_AND_OUT = ['12:00', '13:00', '14:00'];
-  var AMOUNT_ADWORDS = 5;
 
   var adwordsLoad = [];
 
   var succesLoad = function (adwords) {
-    for (var i = 0; i < AMOUNT_ADWORDS; i++) {
+    for (var i = 0; i < adwords.length; i++) {
       adwordsLoad[i] = adwords[i];
     }
   };

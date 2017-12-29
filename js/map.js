@@ -5,22 +5,27 @@
   var MIN_TOP = 100;
   var MIN_LEFT = 0;
   var MAX_RIGHT = window.pin.map.offsetWidth;
+  var AMOUNT_ADWORDS = 5;
+  var DEBOUNCE_INTERVAL = 500;
 
-  var renderFragment = function (ads) {
+  var renderFragment = function (adwords, count) {
     var fragment = document.createDocumentFragment();
-
-    for (var k = 0; k < ads.length; k++) {
-      fragment.appendChild(window.pin.renderPin(ads[k]));
+    if (count > AMOUNT_ADWORDS) {
+      count = AMOUNT_ADWORDS;
+    }
+    for (var i = 0; i < count; i++) {
+      fragment.appendChild(window.pin.renderPin(adwords[i]));
     }
     window.pin.mapElementsPin.appendChild(fragment);
   };
+
 
   var onClickMainPin = function () {
     var fieldset = window.form.noticeForm.querySelectorAll('fieldset');
 
     window.pin.mapVisible.classList.remove('map--faded');
     window.form.noticeForm.classList.remove('notice__form--disabled');
-    renderFragment(window.data.adwordsArray);
+    renderFragment(window.data.adwordsArray, AMOUNT_ADWORDS);
     window.pin.mapVisible.removeEventListener('click', onClickMainPin);
 
     for (var i = 1; i < fieldset.length; i++) {
@@ -98,4 +103,88 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
+  var PRICE_MIDDLE_MIN = 10000;
+  var PRICE_MIDDLE_MAX = 50000;
+
+  var priceOptions = {
+    'low': function (price) {
+      return price < PRICE_MIDDLE_MIN;
+    },
+    'middle': function (price) {
+      return price >= PRICE_MIDDLE_MIN && price <= PRICE_MIDDLE_MAX;
+    },
+    'high': function (price) {
+      return price > PRICE_MIDDLE_MAX;
+    }
+  };
+
+  var filteringPrice = function (list, value) {
+    return list.filter(function (element) {
+      return priceOptions[value](element.offer.price);
+    });
+  };
+
+  var filteringValue = function (list, value, type) {
+    return list.filter(function (element) {
+      if (type === 'guests') {
+        return element.offer[type] >= parseInt(value, 0);
+      } else {
+        return element.offer[type].toString() === value;
+      }
+    });
+  };
+
+  var filterFeatures = function (list, feature) {
+    return list.filter(function (element) {
+      return element.offer.features.indexOf(feature) !== -1;
+    });
+  };
+
+  var filters = document.querySelector('.map__filters');
+  var newArray = [];
+
+  var getFilteredData = function (defaultArray) {
+    var checkFeatures = document.querySelectorAll('.map__filter-set input[type="checkbox"]:checked');
+    var filtersSelects = filters.querySelectorAll('select');
+
+    newArray = defaultArray.slice();
+
+    Array.from(filtersSelects).filter(function (element) {
+      return element.value !== 'any';
+    }).forEach(function (element) {
+      var type = element.name.split('-')[1];
+      newArray = (type === 'price') ? filteringPrice(newArray, element.value) : filteringValue(newArray, element.value, type);
+    });
+
+    checkFeatures.forEach(function (element) {
+      newArray = filterFeatures(newArray, element.value);
+    });
+
+    return newArray;
+  };
+
+  var renderFilterData = function () {
+    var renderPins = document.querySelector('.map__pins');
+
+    while (dialogHandle.nextSibling) {
+      renderPins.removeChild(renderPins.lastChild);
+    }
+
+    renderFragment(newArray, newArray.length);
+  };
+
+  var lastTimeout;
+  var debounce = function (action) {
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(action, DEBOUNCE_INTERVAL);
+  };
+
+  filters.addEventListener('change', function () {
+    getFilteredData(window.data.adwordsArray);
+    debounce(renderFilterData);
+  });
+
 })();
