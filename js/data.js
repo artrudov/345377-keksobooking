@@ -41,7 +41,7 @@
     document.body.appendChild(errorContainer);
   };
 
-   window.backend.load(succesLoad, errorLoad);
+  window.backend.load(succesLoad, errorLoad);
 
   window.data = {
     adwordsArray: adwordsLoad,
