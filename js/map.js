@@ -7,6 +7,8 @@
   var MAX_RIGHT = window.pin.map.offsetWidth;
   var AMOUNT_ADWORDS = 5;
   var DEBOUNCE_INTERVAL = 500;
+  var PRICE_MIDDLE_MIN = 10000;
+  var PRICE_MIDDLE_MAX = 50000;
 
   var renderFragment = function (adwords, count) {
     var fragment = document.createDocumentFragment();
@@ -16,17 +18,17 @@
     for (var i = 0; i < count; i++) {
       fragment.appendChild(window.pin.renderPin(adwords[i]));
     }
-    window.pin.mapElementsPin.appendChild(fragment);
+    window.pin.mapPin.appendChild(fragment);
   };
 
 
   var onClickMainPin = function () {
-    var fieldset = window.form.noticeForm.querySelectorAll('fieldset');
+    var fieldset = window.form.mainForm.querySelectorAll('fieldset');
 
-    window.pin.mapVisible.classList.remove('map--faded');
-    window.form.noticeForm.classList.remove('notice__form--disabled');
+    window.pin.mainPin.classList.remove('map--faded');
+    window.form.mainForm.classList.remove('notice__form--disabled');
     renderFragment(window.data.adwordsArray, AMOUNT_ADWORDS);
-    window.pin.mapVisible.removeEventListener('click', onClickMainPin);
+    window.pin.mainPin.removeEventListener('click', onClickMainPin);
 
     for (var i = 1; i < fieldset.length; i++) {
       fieldset[i].removeAttribute('disabled');
@@ -38,7 +40,7 @@
 
   dialogHandle.style.transform = 'translate(-50%, calc(-50% - 22px))';
 
-  window.pin.mapVisible.addEventListener('click', onClickMainPin);
+  window.pin.mainPin.addEventListener('click', onClickMainPin);
 
   dialogHandle.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -103,9 +105,6 @@
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
-
-  var PRICE_MIDDLE_MIN = 10000;
-  var PRICE_MIDDLE_MAX = 50000;
 
   var priceOptions = {
     'low': function (price) {

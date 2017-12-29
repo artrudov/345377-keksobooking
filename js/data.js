@@ -28,6 +28,7 @@
   var adwordsLoad = [];
 
   var succesLoad = function (adwords) {
+
     for (var i = 0; i < adwords.length; i++) {
       adwordsLoad[i] = adwords[i];
     }
@@ -40,7 +41,7 @@
     document.body.appendChild(errorContainer);
   };
 
-  window.backend.load(succesLoad, errorLoad);
+   window.backend.load(succesLoad, errorLoad);
 
   window.data = {
     adwordsArray: adwordsLoad,

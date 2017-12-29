@@ -45,6 +45,7 @@
   var onClickHousingSync = function () {
     var index = typeHousing.selectedIndex;
     price.setAttribute('placeholder', window.data.typesArray[index].price);
+
     window.synchronizeFields(typeHousing, price, Object.keys(typeAndPrice), Object.values(typeAndPrice), syncValueWithMin);
   };
 
@@ -87,6 +88,6 @@
 
   window.form = {
     address: addressHouse,
-    noticeForm: noticeForm
+    mainForm: noticeForm
   };
 })();
