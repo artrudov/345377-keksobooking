@@ -18,8 +18,8 @@
 
       return pinElement;
     },
-    mapVisible: mapVisible,
-    mapElementsPin: mapElementsPin,
+    mainPin: mapVisible,
+    mapPin: mapElementsPin,
     map: mapCard
   };
 })();
