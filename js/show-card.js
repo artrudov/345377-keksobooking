@@ -36,7 +36,7 @@
     });
 
     window.pin.map.removeChild(window.pin.map.children[1]);
-    window.pin.map.removeEventListener('keydown', window.showCard.popupEscPress);
+    window.pin.map.removeEventListener('keydown', onPopupEscPress);
   };
 
   window.showCard = {
