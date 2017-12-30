@@ -36,7 +36,7 @@
     });
 
     window.pin.map.removeChild(window.pin.map.children[1]);
-    window.pin.map.removeEventListener('keydown', onPopupEscPress);
+    document.removeEventListener('keydown', onPopupEscPress);
   };
 
   window.showCard = {
@@ -67,7 +67,7 @@
 
         popupClose = window.pin.map.querySelector('.popup__close');
 
-        window.pin.map.addEventListener('keydown', onPopupEscPress);
+        document.addEventListener('keydown', onPopupEscPress);
 
         popupClose.addEventListener('keydown', onPopupEnterPress);
 
@@ -78,8 +78,7 @@
       }
 
     },
-    pins: pins,
-    popupEscPress: onPopupEscPress
+    pins: pins
   };
 
 })();
