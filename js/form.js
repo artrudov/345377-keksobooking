@@ -62,6 +62,7 @@
 
   var resetForm = function () {
     noticeForm.reset();
+    onRoomNumberChange();
   };
 
   var onUploadForm = function (evt) {
