@@ -28,10 +28,9 @@
   var adwordsLoad = [];
 
   var succesLoad = function (adwords) {
-
-    for (var i = 0; i < adwords.length; i++) {
-      adwordsLoad[i] = adwords[i];
-    }
+    adwords.forEach(function (item) {
+      adwordsLoad.push(item);
+    });
   };
 
   var errorLoad = function (errorMessage) {
