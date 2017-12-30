@@ -4,7 +4,6 @@
   var mapCard = document.querySelector('.map');
   var mapElementsPin = mapCard.querySelector('.map__pins');
   var pinTemplate = document.querySelector('template').content.querySelector('.map__pin');
-  var mapVisible = document.querySelector('.map');
 
   window.pin = {
     renderPin: function (adwords) {
@@ -18,7 +17,6 @@
 
       return pinElement;
     },
-    mainPin: mapVisible,
     mapPin: mapElementsPin,
     map: mapCard
   };

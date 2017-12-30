@@ -25,14 +25,14 @@
   var onClickMainPin = function () {
     var fieldset = window.form.mainForm.querySelectorAll('fieldset');
 
-    window.pin.mainPin.classList.remove('map--faded');
+    window.pin.map.classList.remove('map--faded');
     window.form.mainForm.classList.remove('notice__form--disabled');
     renderFragment(window.data.adwordsArray, AMOUNT_ADWORDS);
-    window.pin.mainPin.removeEventListener('click', onClickMainPin);
+    window.pin.map.removeEventListener('click', onClickMainPin);
 
-    for (var i = 1; i < fieldset.length; i++) {
-      fieldset[i].removeAttribute('disabled');
-    }
+    fieldset.forEach(function (item) {
+      item.removeAttribute('disabled');
+    });
   };
 
   var dialogHandle = document.querySelector('.map__pin--main');
@@ -40,7 +40,7 @@
 
   dialogHandle.style.transform = 'translate(-50%, calc(-50% - 22px))';
 
-  window.pin.mainPin.addEventListener('click', onClickMainPin);
+  window.pin.map.addEventListener('click', onClickMainPin);
 
   dialogHandle.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -134,7 +134,7 @@
     });
   };
 
-  var filterFeatures = function (list, feature) {
+  var filteringFeatures = function (list, feature) {
     return list.filter(function (element) {
       return element.offer.features.indexOf(feature) !== -1;
     });
@@ -157,7 +157,7 @@
     });
 
     checkFeatures.forEach(function (element) {
-      newArray = filterFeatures(newArray, element.value);
+      newArray = filteringFeatures(newArray, element.value);
     });
 
     return newArray;

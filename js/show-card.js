@@ -9,9 +9,9 @@
 
 
   var installPinActive = function (evt) {
-    for (var i = 0; i < pins.length; i++) {
-      pins[i].classList.remove('map__pin--active');
-    }
+    pins.forEach(function (item) {
+      item.classList.remove('map__pin--active');
+    });
 
     evt.classList.add('map__pin--active');
   };
@@ -31,9 +31,10 @@
   };
 
   var removePinActive = function () {
-    for (var i = 0; i < pins.length; i++) {
-      pins[i].classList.remove('map__pin--active');
-    }
+    pins.forEach(function (item) {
+      item.classList.remove('map__pin--active');
+    });
+
     window.pin.map.removeChild(window.pin.map.children[1]);
     window.pin.map.removeEventListener('keydown', window.showCard.popupEscPress);
   };
