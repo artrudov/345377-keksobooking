@@ -6,7 +6,7 @@
   var pinTemplate = document.querySelector('template').content.querySelector('.map__pin');
 
   window.pin = {
-    renderPin: function (adwords) {
+    render: function (adwords) {
       var pinElement = pinTemplate.cloneNode(true);
       var avatarImageUrl = pinElement.children;
 
@@ -17,7 +17,7 @@
 
       return pinElement;
     },
-    mapPin: mapElementsPin,
+    element: mapElementsPin,
     map: mapCard
   };
 })();

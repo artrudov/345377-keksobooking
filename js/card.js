@@ -19,7 +19,7 @@
   };
 
   window.card = {
-    renderCard: function (ads) {
+    render: function (ads) {
       var cardElement = mapCardTemplate.cloneNode(true);
 
       var cardTitle = cardElement.querySelector('h3');
