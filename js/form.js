@@ -65,6 +65,12 @@
     noticeForm.reset();
     onRoomNumberChange();
     price.setAttribute('placeholder', TYPE_AND_PRICE.flat);
+    avatarPreview.src = 'img/muffin.png';
+
+    while (imagePreview.children[1]) {
+      imagePreview.removeChild(imagePreview.children[1]);
+    }
+
   };
 
   var onUploadForm = function (evt) {
@@ -77,7 +83,6 @@
 
   var imagePreview = noticeForm.querySelector('.form__photo-container');
   var imageLoad = imagePreview.querySelector('#images');
-
 
   var renderImage = function (reader) {
     var newImage = document.createElement('img');
