@@ -19,6 +19,9 @@
   var MAX_LENGTH_IPNUT = 100;
 
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var SECOND_IMAGE_ELEMENT = 1;
+  var SIZE_IMAGE = 40;
+  var TARGET_INDEX = 0;
 
   var noticeForm = document.querySelector('.notice__form');
   var titleAdwords = noticeForm.querySelector('#title');
@@ -53,10 +56,10 @@
   };
 
   var onRoomNumberChange = function () {
-    if (capacityRoom.options.length > 0) {
+    if (capacityRoom.options.length > TARGET_INDEX) {
       [].forEach.call(capacityRoom.options, function (item) {
-        item.selected = (ROOMS_CAPACITY[roomNumber.value][0] === item.value) ? true : false;
-        item.hidden = (ROOMS_CAPACITY[roomNumber.value].indexOf(item.value) >= 0) ? false : true;
+        item.selected = (ROOMS_CAPACITY[roomNumber.value][TARGET_INDEX] === item.value) ? true : false;
+        item.hidden = (ROOMS_CAPACITY[roomNumber.value].indexOf(item.value) >= TARGET_INDEX) ? false : true;
       });
     }
   };
@@ -67,8 +70,8 @@
     price.setAttribute('placeholder', TYPE_AND_PRICE.flat);
     avatarPreview.src = 'img/muffin.png';
 
-    while (imagePreview.children[1]) {
-      imagePreview.removeChild(imagePreview.children[1]);
+    while (imagePreview.children[SECOND_IMAGE_ELEMENT]) {
+      imagePreview.removeChild(imagePreview.children[SECOND_IMAGE_ELEMENT]);
     }
 
   };
@@ -86,15 +89,15 @@
 
   var renderImage = function (reader) {
     var newImage = document.createElement('img');
-    newImage.width = 40;
-    newImage.height = 40;
+    newImage.width = SIZE_IMAGE;
+    newImage.height = SIZE_IMAGE;
     newImage.setAttribute('style', 'margin-top: 10px; margin-right: 5px;');
     newImage.src = reader;
     imagePreview.insertBefore(newImage, imagePreview.children[1]);
   };
 
   avatarLoad.addEventListener('change', function () {
-    var file = avatarLoad.files[0];
+    var file = avatarLoad.files[TARGET_INDEX];
     var fileName = file.name.toLowerCase();
 
     var matches = FILE_TYPES.some(function (it) {
@@ -113,7 +116,7 @@
   });
 
   imageLoad.addEventListener('change', function () {
-    var file = imageLoad.files[0];
+    var file = imageLoad.files[TARGET_INDEX];
     var fileName = file.name.toLowerCase();
 
     var matches = FILE_TYPES.some(function (it) {
