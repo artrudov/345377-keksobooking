@@ -20,27 +20,12 @@
     window.pin.element.appendChild(fragment);
   };
 
-
-  var onClickMainPin = function () {
-    var fieldset = window.form.mainForm.querySelectorAll('fieldset');
-
-    window.pin.map.classList.remove('map--faded');
-    window.form.mainForm.classList.remove('notice__form--disabled');
-    renderFragment(window.data.adwordsArray, AMOUNT_ADWORDS);
-    window.pin.map.removeEventListener('click', onClickMainPin);
-
-    fieldset.forEach(function (item) {
-      item.removeAttribute('disabled');
-    });
-  };
-
   var dialogHandle = document.querySelector('.map__pin--main');
   var address = window.form.address;
 
 
   dialogHandle.style.transform = 'translate(-50%, calc(-50% - 22px))';
 
-  window.pin.map.addEventListener('click', onClickMainPin);
 
   dialogHandle.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -175,5 +160,21 @@
     getFilteredData(window.data.adwordsArray);
     debounce(renderFilterData);
   });
+
+  window.map = {
+
+    onClickMainPin: function () {
+      var fieldset = window.form.mainForm.querySelectorAll('fieldset');
+
+      window.pin.map.classList.remove('map--faded');
+      window.form.mainForm.classList.remove('notice__form--disabled');
+      renderFragment(window.data.adwordsArray, AMOUNT_ADWORDS);
+      window.pin.map.removeEventListener('click', window.map.onClickMainPin);
+
+      fieldset.forEach(function (item) {
+        item.removeAttribute('disabled');
+      });
+    }
+  };
 
 })();
