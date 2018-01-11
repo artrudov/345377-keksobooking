@@ -31,6 +31,8 @@
     adwords.forEach(function (item) {
       adwordsLoad.push(item);
     });
+
+    window.pin.map.addEventListener('click', window.map.onClickMainPin);
   };
 
   var errorLoad = function (errorMessage) {
