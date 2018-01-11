@@ -93,7 +93,7 @@
     newImage.height = SIZE_IMAGE;
     newImage.setAttribute('style', 'margin-top: 10px; margin-right: 5px;');
     newImage.src = reader;
-    imagePreview.insertBefore(newImage, imagePreview.children[1]);
+    imagePreview.insertBefore(newImage, imagePreview.children[SECOND_IMAGE_ELEMENT]);
   };
 
   avatarLoad.addEventListener('change', function () {
