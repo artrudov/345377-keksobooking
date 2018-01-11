@@ -63,7 +63,7 @@
 
         installPinActive(pinElement);
 
-        window.pin.map.insertBefore(window.card.renderCard(ads), window.pin.map.lastChild.previousSibling);
+        window.pin.map.insertBefore(window.card.render(ads), window.pin.map.lastChild.previousSibling);
 
         popupClose = window.pin.map.querySelector('.popup__close');
 
@@ -77,8 +77,7 @@
         });
       }
 
-    },
-    pins: pins
+    }
   };
 
 })();

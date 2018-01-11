@@ -8,7 +8,7 @@
     '100': ['0']
   };
 
-  var typeAndPrice = {
+  var TYPE_AND_PRICE = {
     'flat': 1000,
     'bungalo': 0,
     'house': 5000,
@@ -16,6 +16,9 @@
   };
 
   var MIN_LENGTH_INPUT = 30;
+  var MAX_LENGTH_IPNUT = 100;
+
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
   var noticeForm = document.querySelector('.notice__form');
   var titleAdwords = noticeForm.querySelector('#title');
@@ -42,33 +45,87 @@
 
   var syncValueWithMin = function (element, value) {
     element.min = value;
+    price.setAttribute('placeholder', value);
   };
 
   var onClickHousingSync = function () {
-    var index = typeHousing.selectedIndex;
-    price.setAttribute('placeholder', window.data.typesArray[index].price);
-
-    window.synchronizeFields(typeHousing, price, Object.keys(typeAndPrice), Object.values(typeAndPrice), syncValueWithMin);
+    window.synchronizeFields(typeHousing, price, Object.keys(TYPE_AND_PRICE), Object.values(TYPE_AND_PRICE), syncValueWithMin);
   };
 
-  function onRoomNumberChange() {
+  var onRoomNumberChange = function () {
     if (capacityRoom.options.length > 0) {
       [].forEach.call(capacityRoom.options, function (item) {
         item.selected = (ROOMS_CAPACITY[roomNumber.value][0] === item.value) ? true : false;
         item.hidden = (ROOMS_CAPACITY[roomNumber.value].indexOf(item.value) >= 0) ? false : true;
       });
     }
-  }
+  };
 
   var resetForm = function () {
     noticeForm.reset();
     onRoomNumberChange();
+    price.setAttribute('placeholder', TYPE_AND_PRICE.flat);
   };
 
   var onUploadForm = function (evt) {
     window.backend.upload(new FormData(noticeForm), resetForm, window.data.messageError);
     evt.preventDefault();
   };
+
+  var avatarLoad = noticeForm.querySelector('#avatar');
+  var avatarPreview = noticeForm.querySelector('.notice__photo').querySelector('img');
+
+  var imagePreview = noticeForm.querySelector('.form__photo-container');
+  var imageLoad = imagePreview.querySelector('#images');
+
+
+  var renderImage = function (reader) {
+    var newImage = document.createElement('img');
+    newImage.width = 40;
+    newImage.height = 40;
+    newImage.setAttribute('style', 'margin-top: 10px; margin-right: 5px;');
+    newImage.src = reader;
+    imagePreview.insertBefore(newImage, imagePreview.children[1]);
+  };
+
+  avatarLoad.addEventListener('change', function () {
+    var file = avatarLoad.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        avatarPreview.src = reader.result;
+      });
+
+      reader.readAsDataURL(file);
+    }
+  });
+
+  imageLoad.addEventListener('change', function () {
+    var file = imageLoad.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        renderImage(reader.result);
+      });
+
+      reader.readAsDataURL(file);
+    }
+  });
+
 
   onRoomNumberChange();
 
@@ -81,6 +138,8 @@
     var target = evt.target;
     if (target.value.length < MIN_LENGTH_INPUT) {
       target.setCustomValidity('Имя должно состоять минимум из ' + MIN_LENGTH_INPUT + '-и символов');
+    } else if (target.value.length > MAX_LENGTH_IPNUT) {
+      target.setCustomValidity('Имя должно состоять максимум из ' + MAX_LENGTH_IPNUT + ' символов');
     } else {
       target.setCustomValidity('');
     }
