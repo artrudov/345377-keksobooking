@@ -17,6 +17,7 @@
 
   var MIN_LENGTH_INPUT = 30;
   var MAX_LENGTH_IPNUT = 100;
+  var MIN_PRICE = 1000;
 
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var SECOND_IMAGE_ELEMENT = 1;
@@ -67,6 +68,7 @@
   var resetForm = function () {
     noticeForm.reset();
     onRoomNumberChange();
+    price.min = MIN_PRICE;
     price.setAttribute('placeholder', TYPE_AND_PRICE.flat);
     avatarPreview.src = 'img/muffin.png';
 
