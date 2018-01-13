@@ -3,8 +3,8 @@
 (function () {
   var MAX_TOP = 500;
   var MIN_TOP = 100;
-  var MIN_LEFT = 0;
-  var MAX_RIGHT = window.pin.map.offsetWidth;
+  var MIN_LEFT = 10;
+  var MAX_RIGHT = window.pin.map.offsetWidth - 10;
   var AMOUNT_ADWORDS = 5;
   var DEBOUNCE_INTERVAL = 500;
   var PRICE_MIDDLE_MIN = 10000;
@@ -62,7 +62,7 @@
       }
 
       if (dialogHandle.offsetLeft - shift.x < MIN_LEFT) {
-        dialogHandle.style.left = MIN_LEFT;
+        dialogHandle.style.left = MIN_LEFT + 'px';
       }
 
       if (dialogHandle.offsetLeft - shift.x > MAX_RIGHT) {
